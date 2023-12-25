@@ -7,10 +7,12 @@
 #include "GameFramework/PlayerController.h"
 #include "TDSPlayerController.generated.h"
 
+struct FInputActionValue;
 /** Forward declaration to improve compiling times */
 class UNiagaraSystem;
 class UInputMappingContext;
 class UInputAction;
+class ATDSCharacter;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -42,6 +44,29 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* SetDestinationTouchAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* SetMouseClickAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SetRunAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SetWalkRunSwitcherAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SetMouseWheelAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SetMovementAction;
+
+	UPROPERTY(EditAnywhere)
+	float RotationEase = 10.f;
+	// Max speed of rotation
+	UPROPERTY(EditAnywhere)
+	float RotationMaxSpeed = 25.f;
+
+	UPROPERTY()
+	ATDSCharacter* playerCharacter ;
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -51,13 +76,19 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
-	/** Input handlers for SetDestination action. */
-	void OnInputStarted();
-	void OnSetDestinationTriggered();
-	void OnSetDestinationReleased();
-	void OnTouchTriggered();
-	void OnTouchReleased();
+	virtual void Tick(float DeltaSeconds) override;
 
+	/** Input handlers for SetDestination action. */
+	void onAimTriggered();
+	void onAimReleased();
+	void onRunTriggered();
+	void onRunReleased();
+	void onSwitchRunWalkStateTriggered();
+	void onSwitchRunWalkStateReleased();
+	void inputMouseWheel(const FInputActionValue& Value);
+	void onMovementInput(const FInputActionValue& Value);
+
+	void LookAtMousePosition(float DeltaTime);
 private:
 	FVector CachedDestination;
 
