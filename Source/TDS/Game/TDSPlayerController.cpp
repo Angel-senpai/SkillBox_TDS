@@ -55,7 +55,7 @@ void ATDSPlayerController::LookAtMousePosition(float DeltaTime)
 	DeprojectMousePositionToWorld(MousePos, MouseDir);
 
 	// Declaration of vector of intersection.
-	FVector Intersection = FVector::ZeroVector;
+	Intersection = FVector::ZeroVector;
 	float t = 0.f;
 	// Vector from camera that crosses the plane we want the intersection.
 	FVector LineEnd = MousePos + MouseDir * 2000.f;
@@ -135,7 +135,20 @@ void ATDSPlayerController::onRunTriggered()
 {
 	if (playerCharacter)
 	{
-		playerCharacter->SprintEnabled = true;
+		auto rotation = playerCharacter->GetActorRotation();
+		auto velocity = playerCharacter->GetVelocity();
+
+		auto delta = UKismetMathLibrary::NormalizedDeltaRotator(rotation, velocity.Rotation());
+
+		if (UKismetMathLibrary::Abs(delta.Yaw) <= 40)
+		{
+			playerCharacter->SprintEnabled = true;
+			GEngine->AddOnScreenDebugMessage(1, 0.5f, FColor::Red, TEXT("Sprint on"));
+		}else
+		{
+			playerCharacter->SprintEnabled = false;
+			GEngine->AddOnScreenDebugMessage(1, 0.5f, FColor::Red, TEXT("Sprint off"));
+		}
 		playerCharacter->ChangeMovementState();
 	}
 }
@@ -146,6 +159,8 @@ void ATDSPlayerController::onRunReleased()
 	{
 		playerCharacter->SprintEnabled = false;
 		playerCharacter->ChangeMovementState();
+
+		GEngine->AddOnScreenDebugMessage(1, 0.5f, FColor::Red, TEXT("Sprint off"));
 	}
 }
 
@@ -182,12 +197,18 @@ void ATDSPlayerController::onMovementInput(const FInputActionValue& Value)
 	const FVector2D Vector = Value.Get<FVector2D>();
 	if (playerCharacter)
 	{
+		
+
 		const auto controlRotation = playerCharacter->GetControlRotation();
 		const auto rightVector = UKismetMathLibrary::GetRightVector(FRotator(0, controlRotation.Yaw, controlRotation.Roll));
 		playerCharacter->AddMovementInput(rightVector, Vector.X);
 
 		const auto forwardVector = UKismetMathLibrary::GetForwardVector(FRotator(0, controlRotation.Yaw, 0));
+
+
 		playerCharacter->AddMovementInput(forwardVector, Vector.Y);
+
+
 	}
 }
 

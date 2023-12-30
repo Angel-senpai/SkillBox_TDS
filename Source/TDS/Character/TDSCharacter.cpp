@@ -89,6 +89,7 @@ void ATDSCharacter::ChangeMovementState()
 		MovementState = EMovementState::Run_State;
 	}else
 	{
+
 		if (SprintEnabled)
 		{
 			//WalkEnabled = false;

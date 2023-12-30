@@ -64,6 +64,8 @@ public:
 	// Max speed of rotation
 	UPROPERTY(EditAnywhere)
 	float RotationMaxSpeed = 25.f;
+	UPROPERTY()
+	FVector Intersection = FVector::ZeroVector;
 
 	UPROPERTY()
 	ATDSCharacter* playerCharacter ;
