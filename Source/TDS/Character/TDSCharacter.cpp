@@ -47,6 +47,8 @@ ATDSCharacter::ATDSCharacter()
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	Stamina = MaxStamina;
 }
 
 void ATDSCharacter::Tick(float DeltaSeconds)
@@ -55,6 +57,9 @@ void ATDSCharacter::Tick(float DeltaSeconds)
 
 	const float InterpolatedZoom = UKismetMathLibrary::FInterpTo(CameraBoom->TargetArmLength, TargetCameraHeight, DeltaSeconds, CameraHightStepChange);
 	CameraBoom->TargetArmLength = InterpolatedZoom;
+
+
+	ChangeStamina(DeltaSeconds);
 }
 
 void ATDSCharacter::CharacterUpdate()
@@ -128,4 +133,22 @@ void ATDSCharacter::CameraSlide(float Value)
 	hightResult = FMath::Clamp(step + TargetCameraHeight, CameraHeightMin, CameraHeightMax);
 
 	TargetCameraHeight = hightResult;
+}
+
+void ATDSCharacter::ChangeStamina(const float Delta)
+{
+	float changeSpeed = Delta * 60;
+
+	changeSpeed *= SprintEnabled ? -1 : 1;
+
+	float changedStamina = Stamina + changeSpeed;
+
+	if (changedStamina <= 0 || changedStamina >= MaxStamina)
+	{
+
+		Stamina = SprintEnabled ? 0 : MaxStamina;
+	}
+	else {
+		Stamina = changedStamina;
+	}
 }

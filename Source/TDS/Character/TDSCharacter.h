@@ -32,6 +32,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		FCharacterSpeed MovementInfo;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		float Stamina;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		float MaxStamina = 100;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement")
 		bool SprintEnabled = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
@@ -47,6 +52,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 		float CameraHightStepChange = 100;
 
+
+
 	UFUNCTION(BlueprintCallable)
 		void CharacterUpdate();
 	UFUNCTION(BlueprintCallable)
@@ -54,6 +61,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void CameraSlide(float Value);
+
+		void ChangeStamina(float Delta);
 
 private:
 	/** Top down camera */

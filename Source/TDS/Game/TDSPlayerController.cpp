@@ -140,7 +140,7 @@ void ATDSPlayerController::onRunTriggered()
 
 		auto delta = UKismetMathLibrary::NormalizedDeltaRotator(rotation, velocity.Rotation());
 
-		if (UKismetMathLibrary::Abs(delta.Yaw) <= 40)
+		if (UKismetMathLibrary::Abs(delta.Yaw) <= 20 && playerCharacter->Stamina != 0)
 		{
 			playerCharacter->SprintEnabled = true;
 			GEngine->AddOnScreenDebugMessage(1, 0.5f, FColor::Red, TEXT("Sprint on"));
@@ -148,6 +148,7 @@ void ATDSPlayerController::onRunTriggered()
 		{
 			playerCharacter->SprintEnabled = false;
 			GEngine->AddOnScreenDebugMessage(1, 0.5f, FColor::Red, TEXT("Sprint off"));
+			GEngine->AddOnScreenDebugMessage(1555, 0.5f, FColor::Green, FString::Printf(TEXT("%f"), playerCharacter->Stamina));
 		}
 		playerCharacter->ChangeMovementState();
 	}
